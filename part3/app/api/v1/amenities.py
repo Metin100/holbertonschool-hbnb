@@ -16,9 +16,10 @@ class AmenityList(Resource):
     @jwt_required()
     def post(self):
         current_user = get_jwt_identity()
+        user = facade.get_user(current_user)
         amenity_data = api.payload
 
-        if not current_user.get('is_admin'):
+        if not user.is_admin:
             return {'error': 'Admin privileges required'}, 403
         
         new_amenity = facade.add_amenity(amenity_data)
@@ -52,7 +53,8 @@ class AmenityResource(Resource):
     @jwt_required()
     def put(self, amenity_id):
         current_user = get_jwt_identity()
-        if not current_user.get('is_admin'):
+        user = facade.get_user(current_user)
+        if not user.is_admin:
             return {'error': 'Admin privileges required'}, 403
         
         amenity_data = api.payload
