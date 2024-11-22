@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from app.extensions import db
 
 class Repository(ABC):
 
@@ -26,30 +27,33 @@ class Repository(ABC):
     def get_by_attribute(self, att_name, att_value):
         pass
 
-class MemoryRepository(Repository):
-    def __init__(self):
-        self._storage = {}
+
+class SQLAlchemyRepository(Repository):
+    def __init__(self, model):
+        self.model = model
 
     def add(self, obj):
-        self._storage[obj.id] = obj
+        db.session.add(obj)
+        db.session.commit()
 
     def get(self, obj_id):
-        return self._storage.get(obj_id)
-
+        return self.model.query.get(obj_id)
+    
     def get_all(self):
-        return list(self._storage.values())
-
-    def update(self, obj_id, obj):
-        object = self._storage[obj_id]
-        if object:
-            object.update(obj)
-        return self._storage[obj_id]
+        return self.model.query.all()
+    
+    def update(self, obj_id, data):
+        obj = self.model.query.get(obj_id)
+        if obj:
+            for key, value in data.items():
+                setattr(obj, key, value)
+            db.session.commit()
 
     def delete(self, obj_id):
-        deleted_item = self._storage.get(obj_id)
-        if deleted_item:
-            del self._storage[obj_id]
-        return deleted_item
-
+        obj = self.model.get(obj_id)
+        if obj:
+            db.session.delete(obj_id)
+            db.session.commit()
+    
     def get_by_attribute(self, att_name, att_value):
-        return next((obj for obj in self._storage.values() if getattr(obj, att_name) == att_value), None)
+        return self.model.query.filter_by(**{att_name: att_value}).first()
