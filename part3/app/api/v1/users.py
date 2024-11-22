@@ -51,7 +51,7 @@ class UserResource(Resource):
     @api.response(400, 'Invalid input')
     @api.response(200, 'User retrieved successfully')
     def get(self, user_id):
-        user = facade.get_user(user_id)
+        user: User = facade.get_user(user_id)
         if not user:
             return 'Invalid input', 400
         
@@ -76,7 +76,7 @@ class UserResource(Resource):
         if user_data['email'] != user.email:
             return 'You cannot modify the email.', 400
 
-        if user_data['password'] != user.password:
+        if not user.verify_password(user_data['password']):
             return 'You cannot modify the password.', 400
 
         new_user = facade.update(user_id, user_data)
@@ -85,7 +85,7 @@ class UserResource(Resource):
     @api.response(400, 'Invalid input')
     @api.response(200, 'Deleted successfully')
     def delete(self, user_id):
-        deleted_user = facade.delete(user_id)
+        deleted_user: User = facade.delete(user_id)
         return f'Deleted user: {deleted_user.id} - {deleted_user.first_name} - {deleted_user.email}'
     
 @api.route('/<email>')
@@ -93,7 +93,7 @@ class UserEmail(Resource):
     @api.response(400, 'Invalid Email')
     @api.response(200, 'Retrieved successfully')
     def get(self, email):
-        user_by_email = facade.get_user_by_email(email)
+        user_by_email: User = facade.get_user_by_email(email)
         if not user_by_email:
             return 400, 'Invalid Email'
         
