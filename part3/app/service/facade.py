@@ -1,11 +1,12 @@
 from app.persistence.repository import SQLAlchemyRepository
+from app.service.repositories.user_repository import UserRepository
 from app.models.users import User
 from app.models.amenities import Amenity
 from app.models.places import Place
 from app.models.reviews import Review
 class HBnBFacade:
     def __init__(self):
-        self.user_repo = SQLAlchemyRepository(User)
+        self.user_repo = UserRepository()
         self.amenity_repo = SQLAlchemyRepository(Amenity)
         self.place_repo = SQLAlchemyRepository(Place)
         self.review_repo = SQLAlchemyRepository(Review)
@@ -28,7 +29,7 @@ class HBnBFacade:
         return self.user_repo.delete(user_id)
     
     def get_user_by_email(self, email: str):
-        return self.user_repo.get_by_attribute('email', email)
+        return self.user_repo.get_user_by_email(email)
     
     def add_amenity(self, amenity):
         amenity = Amenity(**amenity)
