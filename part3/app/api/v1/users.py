@@ -92,14 +92,3 @@ class UserResource(Resource):
             }, 200
         else:
             return {"error": "User not found"}, 404
-    
-@api.route('/<email>')
-class UserEmail(Resource):
-    @api.response(400, 'Invalid Email')
-    @api.response(200, 'Retrieved successfully')
-    def get(self, email):
-        user_by_email: User = facade.get_user_by_email(email)
-        if not user_by_email:
-            return 400, 'Invalid Email'
-        
-        return user_by_email.to_dict()
