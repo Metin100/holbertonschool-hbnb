@@ -3,7 +3,7 @@ import app
 from app.extensions import db
 
 class User(BaseModel):
-    __tablebname__ = 'users'
+    __tablename__ = 'users'
 
     first_name = db.Column(db.String(50), nullable=False)
     last_name = db.Column(db.String(50), nullable=False)
@@ -11,7 +11,12 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
-   
+    def __init__(self, first_name, last_name, email, password):
+        self.first_name = first_name
+        self.last_name = last_name
+        self.email = email
+        self.password = password
+
     def add_place(self, place):
         self.places.append(place)
 
