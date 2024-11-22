@@ -14,6 +14,7 @@ class HBnBFacade:
     def add_user(self, user):
         user = User(**user)
         self.user_repo.add(user)
+        user.hash_password(user['password'])
         return user
 
     def get_user(self, user_id: str):
