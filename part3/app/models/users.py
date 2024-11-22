@@ -1,18 +1,17 @@
 from app.models.basemodel import BaseModel
 import app
+from app.extensions import db
 
 class User(BaseModel):
-    def __init__(
-            self, first_name,  last_name, email, password, is_admin:bool
-    ):
-        super().__init__()
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.places = []
-        self.password = self.hash_password(password)
-        self.is_admin = is_admin
-    
+    __tablebname__ = 'users'
+
+    first_name = db.Column(db.String(50), nullable=False)
+    last_name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(120), nullable=False, unique=True)
+    password = db.Column(db.String(128), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False)
+
+   
     def add_place(self, place):
         self.places.append(place)
 
