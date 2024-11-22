@@ -18,13 +18,13 @@ class UserList(Resource):
     @api.expect(user_model, validate=True)
     @api.response(400, 'Email already exists')
     @api.response(200, 'User added successfully')
-    # @jwt_required()
+    @jwt_required()
     def post(self):
-        # current_user = get_jwt_identity()
+        current_user = get_jwt_identity()
         user_data = api.payload
 
-        # if not current_user.get('is_admin'):
-        #     return {'error': 'Admin privileges required'}, 403
+        if not facade.get_user(current_user).is_admin:
+            return {'error': 'Admin privileges required'}, 403
         
         existing_user = facade.get_user_by_email(user_data['email'])
         if existing_user:
@@ -85,8 +85,13 @@ class UserResource(Resource):
     @api.response(400, 'Invalid input')
     @api.response(200, 'Deleted successfully')
     def delete(self, user_id):
-        deleted_user: User = facade.delete(user_id)
-        return f'Deleted user: {deleted_user.id} - {deleted_user.first_name} - {deleted_user.email}'
+        deleted_user: User = facade.delete(user_id) 
+        if deleted_user:
+            return {
+                "message": f"Deleted user: {deleted_user.id} - {deleted_user.first_name} - {deleted_user.email}"
+            }, 200
+        else:
+            return {"error": "User not found"}, 404
     
 @api.route('/<email>')
 class UserEmail(Resource):
@@ -97,4 +102,4 @@ class UserEmail(Resource):
         if not user_by_email:
             return 400, 'Invalid Email'
         
-        return f'{user_by_email.id} - {user_by_email.first_name} - {user_by_email.email}'
+        return user_by_email.to_dict()

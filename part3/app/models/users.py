@@ -18,8 +18,8 @@ class User(BaseModel):
         self.password = self.hash_password(password)
         self.is_admin = is_admin
 
-    def add_place(self, place):
-        self.places.append(place)
+    # def add_place(self, place):
+    #     self.places.append(place)
 
     def hash_password(self, password):
         return app.bcrypt.generate_password_hash(password).decode('utf-8')

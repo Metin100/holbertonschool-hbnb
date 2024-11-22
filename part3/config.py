@@ -7,7 +7,7 @@ class Config:
 
 class DevelopmentConfig(Config):
     DEBUG = True
-    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///development.db') 
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'mysql+mysqldb://root:M3tin190534@localhost:3306/testdatabase') 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 config = {

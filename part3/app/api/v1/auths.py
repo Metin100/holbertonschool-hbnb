@@ -19,6 +19,9 @@ class Login(Resource):
     def post(self):
         credentials = api.payload
 
+        if not credentials or 'email' not in credentials or 'password' not in credentials:
+            return {'error': 'Missing email or password'}, 400
+
         user: User = facade.get_user_by_email(credentials['email'])
 
         if not user or not user.verify_password(credentials['password']):
