@@ -1,5 +1,4 @@
 from app.models.basemodel import BaseModel
-from app.models.users import User
 from app.extensions import db
 
 class Place(BaseModel):
@@ -10,31 +9,26 @@ class Place(BaseModel):
     price = db.Column(db.Float(), nullable=False)
     latitude = db.Column(db.Float(), nullable=False)
     longitude = db.Column(db.Float(), nullable=False)
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
 
-    def __init__(self, title, description, price, latitude, longitude):
+
+    def __init__(self, title, description, price, latitude, longitude, owner_id):
         super().__init__()
         self.title = title
         self.description = description
         self.price = price
         self.latitude = latitude
         self.longitude = longitude
-    
-
-    # def add_review(self, review):
-    #     """Add a review to the place."""
-    #     self.reviews.append(review)
-
-    # def add_amenity(self, amenity):
-    #     """Add an amenity to the place."""
-    #     self.amenities.append(amenity)
-
+        self.owner_id = owner_id
     def to_dict(self):
-        """Convert the User instance into a dictionary."""
+        """Convert the Place instance into a dictionary."""
         base_dict = super().to_dict()
         base_dict.update({
             "title": self.title,
+            "description": self.description,
+            "price": self.price,
             "latitude": self.latitude,
             "longitude": self.longitude,
-            # "owner": self.owner.to_dict()
+            "owner_id": self.owner_id 
         })
         return base_dict
