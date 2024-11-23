@@ -10,7 +10,7 @@ class Review(BaseModel):
     rating = db.Column(db.Integer(), nullable=False)
 
 
-    def __init__(self, text, rating, place: Place, user: User):
+    def __init__(self, text, rating):
         super().__init__()
         self.text = text
         self.rating = rating
