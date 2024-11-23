@@ -20,17 +20,17 @@ class PlaceList(Resource):
     @api.response(400, 'Invalid input')
     @api.response(400, 'Invalid price')
     @api.response(200, 'place added successfully')
-    @jwt_required()
+    # @jwt_required()
     def post(self):
-       current_user = get_jwt_identity()
+    #    current_user = get_jwt_identity()
        place_data = api.payload
-       owner_id = place_data.get('owner_id')
+    #    owner_id = place_data.get('owner_id')
 
-       if owner_id != current_user:
-           return {'error': 'user is not owner'}
+    #    if owner_id != current_user:
+    #        return {'error': 'user is not owner'}
 
-       if not facade.get_user(owner_id):
-           return {'error': 'Invalid owner'}, 400
+    #    if not facade.get_user(owner_id):
+    #        return {'error': 'Invalid owner'}, 400
        
        if place_data.get('price') < 0:
            return {'error': 'Invalid price'}, 400
@@ -41,8 +41,8 @@ class PlaceList(Resource):
        if abs(place_data.get('longitude')) > 180:
            return {'error': 'Invalid longitude'}, 400
        
-       place_data['owner'] = facade.get_user(owner_id)
-       place_data.pop('owner_id', None)
+    #    place_data['owner'] = facade.get_user(owner_id)
+    #    place_data.pop('owner_id', None)
        new_place = facade.add_place(place_data)
        return new_place.to_dict(), 200
     
@@ -73,17 +73,17 @@ class PlaceResource(Resource):
     @api.response(400, 'Invalid owner')
     @api.response(400, 'Invalid id')
     @api.response(200, 'place updated successfully')
-    @jwt_required()
+    # @jwt_required()
     def put(self, place_id):
-        current_user = get_jwt_identity()
+        # current_user = get_jwt_identity()
         place_data = api.payload
-        owner_id = place_data.get('owner_id')
+        # owner_id = place_data.get('owner_id')
 
-        if owner_id != current_user:
-            return {'error': 'Unauthorized action'}, 403
+        # if owner_id != current_user:
+        #     return {'error': 'Unauthorized action'}, 403
         
-        if not facade.get_user(owner_id):
-           return {'error': 'Invalid owner'}, 400
+        # if not facade.get_user(owner_id):
+        #    return {'error': 'Invalid owner'}, 400
         
         if not facade.get_place(place_id):
             return {'error': 'Invalid id'}, 400
@@ -98,4 +98,4 @@ class PlaceResource(Resource):
             return {'error': 'Invalid id'}, 400
         
         deleted_place = facade.delete_place(place_id)
-        return f"deleted place:\n{deleted_place.to_dict()}"
+        return deleted_place.to_dict(), 200
