@@ -41,7 +41,6 @@ class Place(BaseModel):
             "price": self.price,
             "latitude": self.latitude,
             "longitude": self.longitude,
-            "owner_id": self.owner_id,
-            "amenities": [amenity for amenity in self.amenities]
+            "owner_id": self.owner_id
         })
         return base_dict

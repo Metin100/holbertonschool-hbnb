@@ -48,11 +48,19 @@ class HBnBFacade:
     def delete_amenity(self, amenity_id):
         return self.amenity_repo.delete(amenity_id)
     
-    def add_place(self, place):
-        place = Place(**place)
+    def add_place(self, place_data):
+        amenities_ids = place_data.pop('amenities', [])
+        amenities = []
+        for amenity_id in amenities_ids:
+            amenity = self.amenity_repo.get(amenity_id)
+            if amenity:
+                amenities.append(amenity)
+        place = Place(**place_data)
+        place.amenities.extend(amenities) 
         self.place_repo.add(place)
 
         return place
+
 
     def get_place(self, place_id):
         return self.place_repo.get(place_id)

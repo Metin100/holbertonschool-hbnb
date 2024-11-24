@@ -20,38 +20,36 @@ class PlaceList(Resource):
     @api.expect(place_model, validate=True)
     @api.response(400, 'Invalid input')
     @api.response(400, 'Invalid price')
-    @api.response(200, 'place added successfully')
+    @api.response(200, 'Place added successfully')
     @jwt_required()
     def post(self):
-       current_user = get_jwt_identity()
-       place_data = api.payload
-       owner_id = place_data.get('owner_id')
-       amenities = place_data.get('amenities')
+        current_user = get_jwt_identity()
+        place_data = api.payload
+        owner_id = place_data.get('owner_id')
+        amenities = place_data.get('amenities')
 
-       for amenity in amenities:
-           if not facade.get_amenity(amenity):
-               return {'error': 'amenity not exists'}, 400
+       
+        for amenity_id in amenities:
+            if not facade.get_amenity(amenity_id):
+                return {'error': 'Amenity not exists'}, 400
 
-       if owner_id != current_user:
-           return {'error': 'user is not owner'}
+        if owner_id != current_user:
+            return {'error': 'User is not the owner'}, 403
 
-       if not facade.get_user(owner_id):
-           return {'error': 'Invalid owner'}, 400
-       
-       if place_data.get('price') < 0:
-           return {'error': 'Invalid price'}, 400
-       
-       if abs(place_data.get('latitude')) > 90:
-           return {'error': 'Invalid latitude'}, 400
-       
-       if abs(place_data.get('longitude')) > 180:
-           return {'error': 'Invalid longitude'}, 400
-       
-    #    place_data['owner'] = facade.get_user(owner_id)
-    #    place_data.pop('owner_id', None)
-       new_place = facade.add_place(place_data)
-       return new_place.to_dict(), 200
-    
+        if not facade.get_user(owner_id):
+            return {'error': 'Invalid owner'}, 400
+        
+        if place_data.get('price') < 0:
+            return {'error': 'Invalid price'}, 400
+        if abs(place_data.get('latitude')) > 90:
+            return {'error': 'Invalid latitude'}, 400
+        if abs(place_data.get('longitude')) > 180:
+            return {'error': 'Invalid longitude'}, 400
+
+        new_place = facade.add_place(place_data)
+        return new_place.to_dict(), 200
+
+        
     @api.response(400, 'List is empty')
     @api.response(200, 'List retrieved successfully')
     def get(self):
