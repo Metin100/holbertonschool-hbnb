@@ -41,8 +41,8 @@ class PlaceList(Resource):
        if abs(place_data.get('longitude')) > 180:
            return {'error': 'Invalid longitude'}, 400
        
-       place_data['owner'] = facade.get_user(owner_id)
-       place_data.pop('owner_id', None)
+    #    place_data['owner'] = facade.get_user(owner_id)
+    #    place_data.pop('owner_id', None)
        new_place = facade.add_place(place_data)
        return new_place.to_dict(), 200
     

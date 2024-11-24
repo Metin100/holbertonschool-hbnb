@@ -9,8 +9,14 @@ class Place(BaseModel):
     price = db.Column(db.Float(), nullable=False)
     latitude = db.Column(db.Float(), nullable=False)
     longitude = db.Column(db.Float(), nullable=False)
-    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), nullable=False)
+    owner_id = db.Column(db.String(36), db.ForeignKey('users.id'), unique=False, nullable=False)
 
+    @staticmethod
+    def init_relationships():
+        from app.models.reviews import Review
+        from app.models.users import User
+        owner = db.relationship(User, backref="place", lazy=True)
+        review = db.relationship(Review, backref="place", lazy=True)
 
     def __init__(self, title, description, price, latitude, longitude, owner_id):
         super().__init__()
@@ -20,6 +26,7 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
         self.owner_id = owner_id
+        
     def to_dict(self):
         """Convert the Place instance into a dictionary."""
         base_dict = super().to_dict()

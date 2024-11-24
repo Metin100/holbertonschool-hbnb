@@ -1,6 +1,7 @@
+
 from app.models.basemodel import BaseModel
-import app
 from app.extensions import db
+import app
 
 class User(BaseModel):
     __tablename__ = 'users'
@@ -11,6 +12,13 @@ class User(BaseModel):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
+    @staticmethod
+    def init_relationships():
+        from app.models.places import Place
+        from app.models.reviews import Review
+        place = db.relationship(Place, backref="user", lazy=True)
+        review = db.relationship(Review, backref="user", lazy=True)
+    
     def __init__(self, first_name, last_name, email, password, is_admin):
         self.first_name = first_name
         self.last_name = last_name
@@ -31,7 +39,6 @@ class User(BaseModel):
             "first_name": self.first_name,
             "last_name": self.last_name,
             "email": self.email,
-            "is_admin": self.is_admin,
-            # "places": [place.to_dict() for place in self.places]  # Include associated places
+            "is_admin": self.is_admin
         })
         return base_dict
