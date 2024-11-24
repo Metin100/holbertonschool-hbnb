@@ -16,13 +16,13 @@ class Place(BaseModel):
         from app.models.reviews import Review
         from app.models.users import User
         from app.models.amenities import Amenity
-        from app.models.place_review import place_amenity
+        from app.models.place_review import PlaceAmenity
         owner = db.relationship(User, backref="place", lazy=True)
         review = db.relationship(Review, backref="place", lazy=True)
-        amenities = db.relationship(Amenity, secondary=place_amenity, backref=db.backref('place', lazy=True), lazy=True
-    )
+        # amenities = db.relationship(Amenity, secondary=PlaceAmenity, backref=db.backref('place', lazy=True), lazy=True
+    
 
-    def __init__(self, title, description, price, latitude, longitude, owner_id, amenities=None):
+    def __init__(self, title, description, price, latitude, longitude, owner_id):
         super().__init__()
         self.title = title
         self.description = description
@@ -30,7 +30,6 @@ class Place(BaseModel):
         self.latitude = latitude
         self.longitude = longitude
         self.owner_id = owner_id
-        self.amenities = amenities or []
         
     def to_dict(self):
         """Convert the Place instance into a dictionary."""

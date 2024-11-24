@@ -2,12 +2,15 @@ from app.persistence.repository import SQLAlchemyRepository
 from app.models.users import User
 from app.models.amenities import Amenity
 from app.models.places import Place
+from app.models.place_review import PlaceAmenity
 from app.models.reviews import Review
+
 class HBnBFacade:
     def __init__(self):
         self.user_repo = SQLAlchemyRepository(User)
         self.amenity_repo = SQLAlchemyRepository(Amenity)
         self.place_repo = SQLAlchemyRepository(Place)
+        self.place_amenity_repo = SQLAlchemyRepository(PlaceAmenity)
         self.review_repo = SQLAlchemyRepository(Review)
 
     def add_user(self, user):
@@ -50,15 +53,8 @@ class HBnBFacade:
     
     def add_place(self, place_data):
         amenities_ids = place_data.pop('amenities', [])
-        amenities = []
-        for amenity_id in amenities_ids:
-            amenity = self.amenity_repo.get(amenity_id)
-            if amenity:
-                amenities.append(amenity)
         place = Place(**place_data)
-        place.amenities.extend(amenities) 
         self.place_repo.add(place)
-
         return place
 
 

@@ -9,9 +9,9 @@ class Amenity(BaseModel):
 
     @staticmethod
     def init_relationships():
-        from app.models.place_review import place_amenity
+        from app.models.place_review import PlaceAmenity
         from app.models.places import Place
-        places = db.relationship(Place, secondary=place_amenity, backref=db.backref('amenity', lazy=True), lazy=True
+        places = db.relationship(Place, secondary=PlaceAmenity, backref=db.backref('amenity', lazy=True), lazy=True
     )
     
     def __init__(self, name):
