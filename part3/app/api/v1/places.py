@@ -10,7 +10,8 @@ place_model = api.model('Place', {
     "price" : fields.Float(requiered=True, description="price of place"),
     "latitude" : fields.Float(requiered=True, description="latitude of place"),
     "longitude" : fields.Float(requiered=True, description="longitude of place"),
-    "owner_id" : fields.String(requiered=True, description="owner of place")
+    "owner_id" : fields.String(requiered=True, description="owner of place"),
+    "amenities": fields.List(fields.String(), required=True, description="List of amenities ID's")
 })
 
 
@@ -25,6 +26,11 @@ class PlaceList(Resource):
        current_user = get_jwt_identity()
        place_data = api.payload
        owner_id = place_data.get('owner_id')
+       amenities = place_data.get('amenities')
+
+       for amenity in amenities:
+           if not facade.get_amenity(amenity):
+               return {'error': 'amenity not exists'}, 400
 
        if owner_id != current_user:
            return {'error': 'user is not owner'}

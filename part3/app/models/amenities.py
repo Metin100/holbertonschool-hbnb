@@ -6,6 +6,13 @@ class Amenity(BaseModel):
     __tablename__ = "amenities"
 
     name = db.Column(db.String(155), nullable=False)
+
+    @staticmethod
+    def init_relationships():
+        from app.models.place_review import place_amenity
+        from app.models.places import Place
+        places = db.relationship(Place, secondary=place_amenity, backref=db.backref('amenity', lazy=True), lazy=True
+    )
     
     def __init__(self, name):
         super().__init__()
