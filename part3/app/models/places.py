@@ -16,10 +16,10 @@ class Place(BaseModel):
         from app.models.reviews import Review
         from app.models.users import User
         from app.models.amenities import Amenity
-        from app.models.place_review import PlaceAmenity
+        from app.models.place_amenity import PlaceAmenity
         owner = db.relationship(User, backref="place", lazy=True)
         review = db.relationship(Review, backref="place", lazy=True)
-        # amenities = db.relationship(Amenity, secondary=PlaceAmenity, backref=db.backref('place', lazy=True), lazy=True
+        amenities = db.relationship(Amenity, secondary=PlaceAmenity, backref=db.backref('place', lazy=True), lazy=True)
     
 
     def __init__(self, title, description, price, latitude, longitude, owner_id):

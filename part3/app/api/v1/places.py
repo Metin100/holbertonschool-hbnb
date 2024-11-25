@@ -11,7 +11,7 @@ place_model = api.model('Place', {
     "latitude" : fields.Float(requiered=True, description="latitude of place"),
     "longitude" : fields.Float(requiered=True, description="longitude of place"),
     "owner_id" : fields.String(requiered=True, description="owner of place"),
-    "amenities": fields.List(fields.String(), required=True, description="List of amenities ID's")
+    "amenities": fields.List(fields.String, required=True, description="List of amenities ID's")
 })
 
 
@@ -41,8 +41,10 @@ class PlaceList(Resource):
         
         if place_data.get('price') < 0:
             return {'error': 'Invalid price'}, 400
+        
         if abs(place_data.get('latitude')) > 90:
             return {'error': 'Invalid latitude'}, 400
+        
         if abs(place_data.get('longitude')) > 180:
             return {'error': 'Invalid longitude'}, 400
 

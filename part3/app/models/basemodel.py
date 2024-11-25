@@ -10,7 +10,6 @@ class BaseModel(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
 
-
     def save(self):
         self.updated_at = datetime.now()
 

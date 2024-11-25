@@ -2,7 +2,7 @@ from app.persistence.repository import SQLAlchemyRepository
 from app.models.users import User
 from app.models.amenities import Amenity
 from app.models.places import Place
-from app.models.place_review import PlaceAmenity
+from app.models.place_amenity import PlaceAmenity
 from app.models.reviews import Review
 
 class HBnBFacade:
@@ -55,6 +55,12 @@ class HBnBFacade:
         amenities_ids = place_data.pop('amenities', [])
         place = Place(**place_data)
         self.place_repo.add(place)
+        for amenity_id in amenities_ids:
+            if self.get_amenity(amenity_id) and self.get_place(place.id):
+                place_amenity = PlaceAmenity(place.id, str(amenity_id))
+                self.place_amenity_repo.add(place_amenity)
+            else:
+                return {'error': 'Amenity/Place not exists'}
         return place
 
 
