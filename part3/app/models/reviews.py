@@ -1,5 +1,7 @@
 from app.models.basemodel import BaseModel
 from app.extensions import db
+from app.models.users import User
+from app.models.places import Place
 
 class Review(BaseModel):
     __tablename__ = "reviews"
@@ -24,12 +26,15 @@ class Review(BaseModel):
         self.user_id = user_id
 
     def to_dict(self):
+        from app.service import facade
         """Convert the User instance into a dictionary."""
         base_dict = super().to_dict()
+        user: User = facade.get_user(self.user_id)
+        place: Place = facade.get_place(self.place_id)
         base_dict.update({
             "text": self.text,
             "rating": self.rating,
-            "place_id": self.place_id,
-            "user_id": self.user_id
+            "place_id": place.to_dict(),
+            "user_id": user.to_dict()
         })
         return base_dict
