@@ -48,39 +48,40 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 });
 
-
 function displayPlaces(places) {
     const placeList = document.querySelector('#places-list');
     const priceFilter = document.querySelector('#price-filter');
     placeList.textContent = '';
-    console.log(places)
 
-    for (let i = 0; i < places.length; i++) {
+
+    places.forEach(({ title, price }) => {
         const placeCard = document.createElement('div');
-        placeCard.classList.add("place-card");
-
-        const selectPrice = document.createElement('option');
-        selectPrice.value = places[i].price;
-        selectPrice.textContent = `${places[i].price}`
+        placeCard.className = "place-card";
 
         const placeContent = document.createElement('div');
-        placeContent.classList.add("place-content");
+        placeContent.className = "place-content";
 
-        const placeHeader = document.createElement('div');
-        placeHeader.classList.add("place-header");
-        placeHeader.textContent = `${places[i].title}`;
-
-        const placePrice = document.createElement('div');
-        placePrice.classList.add("place-price");
-        placePrice.textContent = `Price per night: ${places[i].price}`;
+        placeContent.innerHTML = `
+            <div class="place-header">${title}</div>
+            <div class="place-price">Price per night: ${price}</div>
+        `;
 
         const placeButton = document.createElement('button');
-        placeButton.classList.add("place-button");
+        placeButton.className = "place-button";
         placeButton.textContent = 'View Details';
 
-        priceFilter.append(selectPrice)
-        placeContent.append(placeHeader, placePrice, placeButton);
+        placeContent.appendChild(placeButton);
         placeCard.appendChild(placeContent);
-        placeList.append(placeCard);
-    }
+        placeList.appendChild(placeCard);
+    });
+
+    priceFilter.addEventListener('change', (event) => {
+        const value = Number(event.target.value);
+        const nodeList = document.querySelectorAll('.place-content');
+    
+        nodeList.forEach(node => {
+            const price = Number(node.children[1].textContent.split(': ')[1]);
+            node.parentElement.style.display = value && price > value ? 'none' : 'block';
+        });
+    });    
 }
