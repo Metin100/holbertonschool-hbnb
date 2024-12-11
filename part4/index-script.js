@@ -54,7 +54,7 @@ function displayPlaces(places) {
     placeList.textContent = '';
 
 
-    places.forEach(({ title, price }) => {
+    places.forEach(({ title, price, id }) => {
         const placeCard = document.createElement('div');
         placeCard.className = "place-card";
 
@@ -68,6 +68,9 @@ function displayPlaces(places) {
 
         const placeButton = document.createElement('button');
         placeButton.className = "place-button";
+        placeButton.onclick = () => {
+            window.location = `http://127.0.0.1:5500/place.html?place_id=${id}`;
+        };
         placeButton.textContent = 'View Details';
 
         placeContent.appendChild(placeButton);
@@ -78,10 +81,9 @@ function displayPlaces(places) {
     priceFilter.addEventListener('change', (event) => {
         const value = Number(event.target.value);
         const nodeList = document.querySelectorAll('.place-content');
-    
         nodeList.forEach(node => {
             const price = Number(node.children[1].textContent.split(': ')[1]);
             node.parentElement.style.display = value && price > value ? 'none' : 'block';
         });
-    });    
+    });
 }
